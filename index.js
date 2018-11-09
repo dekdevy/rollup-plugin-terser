@@ -7,14 +7,6 @@ function terser(userOptions = {}) {
     throw Error("sourceMap option is removed, use sourcemap instead");
   }
 
-  const minifierOptions = serialize(
-    Object.assign({}, userOptions, {
-      sourceMap: userOptions.sourcemap !== false,
-      sourcemap: undefined,
-      numWorkers: undefined
-    })
-  );
-
   return {
     name: "terser",
 
@@ -25,7 +17,7 @@ function terser(userOptions = {}) {
     },
 
     renderChunk(code) {
-      return this.worker.transform(code, minifierOptions).catch(error => {
+      return this.worker.transform(code, userOptions).catch(error => {
         const { message, line, col: column } = error;
         console.error(
           codeFrameColumns(code, { start: { line, column } }, { message })
